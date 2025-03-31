@@ -45,7 +45,7 @@ def main():
 
         #clarification of the password creation for the specific user
         print("==> Setting the password for %s..." % (username))
-        #a password will be created, and the user will only need to enter it once as it is "echo'd" and seperated by the new line. It is sudo'd to make sure the password is set to the username correctly
+        #a password will be created, and the user will only need to enter it once as it is "echo'd/repliacted" and seperated by the new line. It is sudo'd to make sure the password is set to the username correctly
         cmd = "/bin/echo -ne '%s\n%s' | /usr/bin/sudo /usr/bin/passwd %s" % (password, password, username)
 
         #before running "os.system(cmd)" is important to print out "cmd" to know the outcome. When "os.system(cmd)" becomes uncommented, it will change the system
