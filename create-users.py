@@ -1,71 +1,64 @@
 #!/usr/bin/python3
 
 # INET4031
-# Your Name
-# Data Created
-# Date Last Modified
+# Ilan Aguilar Sanchez
+# 3/24/25
+# D3/30/25
 
-#REPLACE THIS COMMENT - identify what each of these imports is for.
+#import os (operating system) lets the program interact and run on the operating system
 import os
+#import re (regular expression) allows for the program to check if a string has a certain character(s)
 import re
-import sys
-
-#YOUR CODE SHOULD HAVE NONE OF THE INSTRUCTORS COMMENTS REMAINING WHEN YOU ARE FINISHED
-#PLEASE REPLACE INSTRUCTOR "PROMPTS" WITH COMMENTS OF YOUR OWN
+#import sys to make sure inputs and outputs can interacted in the program
+import sys 
 
 def main():
     for line in sys.stdin:
 
-        #REPLACE THIS COMMENT - this "regular expression" is searching for the presence of a character - what is it and why?
-        #The important part is WHY it is looking for a particular characer - what is that character being used for?
-        match = re.match("^#",line)
+        #match is looking for the "#" character at the beginning of the line
+        #this "#" is used to block certain lines from the "create=users.input" file, so the program doesn't error out
+        match = re.match("^#", line)
 
-        #REPLACE THIS COMMENT - why is the code doing this?
+        #each individual entry is categorized by the ":", making sure there are no overlapping fields
         fields = line.strip().split(':')
 
-        #REPLACE THESE COMMENTS with a single comment describing the logic of the IF 
-        #what would an appropriate comment be for describing what this IF statement is checking for?
-        #what happens if the IF statement evaluates to true?
-        #how does this IF statement rely on what happened in the prior two lines of code? The match and fields lines.
-        #the code clearly shows that the variables match and the length of fields is being checked for being != 5  so why is it doing that?
+        #"if" is checking is match is valid or when there are not exactly 5 fields, when true, it will skip the rest of the program
         if match or len(fields) != 5:
             continue
 
-        #REPLACE THIS COMMENT - what is the purpose of the next three lines. How does it relate to what is stored in the passwd file?
+        #the username and password are stored in fields 0 and 1, respectively, while gecos is built using fields 3 and 2, which are last and first name of the user
         username = fields[0]
         password = fields[1]
-        gecos = "%s %s,,," % (fields[3],fields[2])
+        gecos = "%s %s,,," % (fields[3], fields[2])
 
-        #REPLACE THIS COMMENT - why is this split being done?
+        #if there are multiple groups within a username, it will split the groups into two indivdual groups
         groups = fields[4].split(',')
 
-        #REPLACE THIS COMMENT - what is the point of this print statement?
+        #clarification of the account creation for the specific user
         print("==> Creating account for %s..." % (username))
-        #REPLACE THIS COMMENT - what is this line doing?  What will the variable "cmd" contain.
-        cmd = "/usr/sbin/adduser --disabled-password --gecos '%s' %s" % (gecos,username)
+        #this is the creation of the account in the adduser file. Using gecos for the last and first name, username for the username, and not needing a password right away
+        cmd = "/usr/sbin/adduser --disabled-password --gecos '%s' %s" % (gecos, username)
+        
+        #before running "os.system(cmd)" is important to print out "cmd" to know the outcome. When "os.system(cmd)" becomes uncommented, it will change the system
+        print(cmd)  
+        os.system(cmd)  
 
-        #REMOVE THIS COMMENT AFTER YOU UNDERSTAND WHAT TO DO - these statements are currently "commented out" as talked about in class
-        #The first time you run the code...what should you do here?  If uncommented - what will the os.system(cmd) statemetn attempt to do?
-        #print cmd
-        #os.system(cmd)
-
-        #REPLACE THIS COMMENT - what is the point of this print statement?
+        #clarification of the password creation for the specific user
         print("==> Setting the password for %s..." % (username))
-        #REPLACE THIS COMMENT - what is this line doing?  What will the variable "cmd" contain. You'll need to lookup what these linux commands do.
-        cmd = "/bin/echo -ne '%s\n%s' | /usr/bin/sudo /usr/bin/passwd %s" % (password,password,username)
+        #a password will be created, and the user will only need to enter it once as it is "echo'd" and seperated by the new line. It is sudo'd to make sure the password is set to the username correctly
+        cmd = "/bin/echo -ne '%s\n%s' | /usr/bin/sudo /usr/bin/passwd %s" % (password, password, username)
 
-        #REMOVE THIS COMMENT AFTER YOU UNDERSTAND WHAT TO DO - these statements are currently "commented out" as talked about in class
-        #The first time you run the code...what should you do here?  If uncommented - what will the os.system(cmd) statemetn attempt to do?
-        #print cmd
-        #os.system(cmd)
+        #before running "os.system(cmd)" is important to print out "cmd" to know the outcome. When "os.system(cmd)" becomes uncommented, it will change the system
+        print(cmd) 
+        os.system(cmd)
 
         for group in groups:
-            #REPLACE THIS COMMENT with one that answers "What is this IF statement looking for and why? If group !='-' what happens?"
+            #if looks for groups that do contain the "-" characteor in the field, if they do not contain the "-", it will assign the username to the group
             if group != '-':
-                print("==> Assigning %s to the %s group..." % (username,group))
-                cmd = "/usr/sbin/adduser %s %s" % (username,group)
-                #print cmd
-                #os.system(cmd)
+                print("==> Assigning %s to the %s group..." % (username, group))
+                cmd = "/usr/sbin/adduser %s %s" % (username, group)
+                print(cmd)
+                os.system(cmd)
 
 if __name__ == '__main__':
     main()
